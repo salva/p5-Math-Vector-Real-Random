@@ -69,7 +69,7 @@ sub random_normal {
 
 =head1 NAME
 
-Math::Vector::Real::Random - Perl extension for blah blah blah
+Math::Vector::Real::Random - Generate random real vectors
 
 =head1 SYNOPSIS
 
