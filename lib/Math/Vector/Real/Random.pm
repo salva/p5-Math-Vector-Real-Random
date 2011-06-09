@@ -27,7 +27,7 @@ sub random_in_box {
 sub random_in_sphere {
     my ($class, $dim, $size) = @_;
     $size ||= 1;
-    my $n = $class->random_versor($size);
+    my $n = $class->random_versor($dim);
     my $f = Math::Random::random_uniform(1, 0, 1) ** (1/$dim);
     $_ *= $f for @$n;
     $n;
@@ -50,7 +50,7 @@ sub random_versor {
         }
     }
     elsif ($dim >= 2) {
-        my $ang = Math::Random::random_uniform(-(_PI), _PI);
+        my $ang = Math::Random::random_uniform(1, -(_PI), _PI);
         @n = (sin $ang, cos $ang);
     }
     elsif ($dim >= 1) {
