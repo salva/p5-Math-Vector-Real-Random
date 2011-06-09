@@ -1,40 +1,71 @@
 package Math::Vector::Real::Random;
 
-use 5.012003;
-use strict;
-use warnings;
-
-require Exporter;
-
-our @ISA = qw(Exporter);
-
-# Items to export into callers namespace by default. Note: do not export
-# names by default without a very good reason. Use EXPORT_OK instead.
-# Do not simply export all your public functions/methods/constants.
-
-# This allows declaration	use Math::Vector::Real::Random ':all';
-# If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
-# will save memory.
-our %EXPORT_TAGS = ( 'all' => [ qw(
-	
-) ] );
-
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-
-our @EXPORT = qw(
-	
-);
-
 our $VERSION = '0.01';
 
-require XSLoader;
-XSLoader::load('Math::Vector::Real::Random', $VERSION);
+package Math::Vector::Real;
 
-# Preloaded methods go here.
+use strict;
+use warnings;
+use Carp;
+
+use Math::Random ();
+
+use constant _PI => 3.14159265358979323846264338327950288419716939937510;
+
+sub random_in_box {
+    if (ref $_[0]) {
+        my $box = shift;
+        return bless [map Math::Random::random_uniform(1, 0, $_), @$box], ref $box;
+    }
+    else {
+        my ($class, $dim, $size) = @_;
+        $size = 1 unless defined $size;
+        return bless [Math::Random::random_uniform($dim, 0, $size)], $class;
+    }
+}
+
+sub random_in_sphere {
+    my ($class, $dim, $size) = @_;
+    $size ||= 1;
+    my $n = $class->random_versor($size);
+    my $f = Math::Random::random_uniform(1, 0, 1) ** (1/$dim);
+    $_ *= $f for @$n;
+    $n;
+}
+
+sub random_versor {
+    my ($class, $dim, $scale) = @_;
+    my @n;
+    $scale = 1 unless defined $scale;
+    if ($dim >= 3) {
+        @n = Math::Random::random_normal $dim, 0, 1;
+        my $d = 0;
+        $d += $_ * $_ for @n;
+        unless ($d) {
+            $n[0] = $scale;
+        }
+        else {
+            $d = $scale/sqrt($d);
+            $_ *= $d for @n;
+        }
+    }
+    elsif ($dim >= 2) {
+        my $ang = Math::Random::random_uniform(-(_PI), _PI);
+        @n = (sin $ang, cos $ang);
+    }
+    elsif ($dim >= 1) {
+        @n = (rand >= 0.5 ? 1 : -1);
+    }
+    bless \@n, $class;
+}
+
+sub random_normal {
+    my ($class, $dim, $sd) = @_;
+    $sd ||= 1;
+    bless [Math::Random::random_normal $dim, 0, $sd], $class;
+}
 
 1;
-__END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
@@ -42,37 +73,57 @@ Math::Vector::Real::Random - Perl extension for blah blah blah
 
 =head1 SYNOPSIS
 
+  use Math::Vector::Real qw(V);
   use Math::Vector::Real::Random;
-  blah blah blah
+
+  my $v = Math::Vector::Real->random_normal(7);
+  my $v2 = $c->random_normal;
 
 =head1 DESCRIPTION
 
-Stub documentation for Math::Vector::Real::Random, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
+This module extends the L<Math::Vector::Real> package adding some
+methods for random generation of vectors.
 
-Blah blah blah.
+=head2 Methods
 
-=head2 EXPORT
+The extra methods are:
 
-None by default.
+=over 4
 
+=item Math::Vector::Real->random_in_box($dim, $size)
 
+=item $v->random_in_box
+
+When called as a class method, returns a random vector of dimension
+C<$dim> contained inside the hypercube of the given size.
+
+When called as an instance method, returns a random vector contained
+in the box defined by the given vector instance.
+
+=item Math::Vector::Real->random_in_sphere($dim, $radio)
+
+Returns random vector inside the hyper-sphere of the given dimension
+and radio.
+
+=item Math::Vector::Real->random_versor($dim)
+
+Returns a randon vector of norm 1.0.
+
+=item Math::Vector::Real->random_normal($dim, $sd)
+
+Returns a random vector in the space of the given dimension, where
+each component follows a normal distribution with standard deviation
+C<$sd> (defaults to 1.0).
+
+=back
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
+L<Math::Vector::Real>, L<Math::Random>.
 
-If you have a mailing list set up for your module, mention it here.
+=head1 AUTHORS
 
-If you have a web site set up for your module, mention it here.
-
-=head1 AUTHOR
-
-Salvador Fandino, E<lt>salva@E<gt>
+Salvador Fandino, E<lt>salva@E<gt>, David Serrano.
 
 =head1 COPYRIGHT AND LICENSE
 
