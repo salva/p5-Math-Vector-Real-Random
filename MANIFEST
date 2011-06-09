@@ -1,8 +1,6 @@
 Changes
 Makefile.PL
 MANIFEST
-ppport.h
-Random.xs
 README
 t/Math-Vector-Real-Random.t
 lib/Math/Vector/Real/Random.pm
