@@ -1,6 +1,6 @@
 package Math::Vector::Real::Random;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 package Math::Vector::Real;
 
