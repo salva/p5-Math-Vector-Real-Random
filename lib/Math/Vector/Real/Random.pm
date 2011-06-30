@@ -51,10 +51,10 @@ sub random_versor {
     }
     elsif ($dim >= 2) {
         my $ang = Math::Random::random_uniform(1, -(_PI), _PI);
-        @n = (sin $ang, cos $ang);
+        @n = ($scale * sin $ang, $scale * cos $ang);
     }
     elsif ($dim >= 1) {
-        @n = (rand >= 0.5 ? 1 : -1);
+        @n = (rand >= 0.5 ? $scale : -$scale);
     }
     bless \@n, $class;
 }
