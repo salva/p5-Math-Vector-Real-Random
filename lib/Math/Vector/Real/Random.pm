@@ -2,7 +2,8 @@ package Math::Vector::Real::Random;
 
 our $VERSION = '0.03';
 
-package Math::Vector::Real;
+package
+    Math::Vector::Real; # this declaration should be ignored by CPAN indexer
 
 use strict;
 use warnings;
