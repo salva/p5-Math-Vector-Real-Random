@@ -1,6 +1,6 @@
 package Math::Vector::Real::Random;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 package Math::Vector::Real;
 
@@ -28,7 +28,7 @@ sub random_in_sphere {
     my ($class, $dim, $size) = @_;
     $size ||= 1;
     my $n = $class->random_versor($dim);
-    my $f = Math::Random::random_uniform(1, 0, 1) ** (1/$dim);
+    my $f = $size * (Math::Random::random_uniform(1, 0, 1) ** (1/$dim));
     $_ *= $f for @$n;
     $n;
 }
@@ -127,7 +127,7 @@ Salvador Fandino, E<lt>salva@E<gt>, David Serrano.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2011 by Salvador Fandino
+Copyright (C) 2011, 2013 by Salvador FandiE<ntilde>o
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.12.3 or,
