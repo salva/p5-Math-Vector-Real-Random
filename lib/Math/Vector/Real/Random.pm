@@ -34,6 +34,13 @@ sub random_in_sphere {
     $n;
 }
 
+sub random_in_parallelotope {
+    my ($class, $o, @v) = @_;
+    my $p = V(@$o);
+    $p += Math::Random::random_uniform(1, 0, 1) * $_ for @v;
+    $p;
+}
+
 sub random_versor {
     my ($class, $dim, $scale) = @_;
     my @n;
@@ -115,6 +122,13 @@ Returns a randon vector of norm 1.0.
 Returns a random vector in the space of the given dimension, where
 each component follows a normal distribution with standard deviation
 C<$sd> (defaults to 1.0).
+
+=item Math::Vector::Real->random_in_parallelotope($o, @edges)
+
+Returns a random vector from a parallelotope (which is the
+generalization of
+L<parallelogram|http://en.wikipedia.org/wiki/Parallelogram> and
+L<parallepiped|http://en.wikipedia.org/wiki/Parallepiped>).
 
 =back
 
